@@ -3,6 +3,8 @@ import router from "./routes/index.js";
 import session from "express-session"
 import MongoStore from "connect-mongo";
 import { connectMongoDB } from "./config/mongoDB.config.js";
+import passport from "passport";
+import initializePassport from "./config/passport.config..js";
 
 //conexión a BD 
 connectMongoDB();
@@ -20,6 +22,11 @@ app.use(session({
   resave: true,
   saveUninitialized: false
 }));
+
+
+app.use(passport.initialize());
+app.use(passport.session());
+initializePassport();
 
 app.use(express.urlencoded({ extended: true })); // nos permite leer postman
 app.use("/api", router); //agregado para la primer pre-entrega

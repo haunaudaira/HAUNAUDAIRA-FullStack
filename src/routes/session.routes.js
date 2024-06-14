@@ -1,52 +1,40 @@
 import { Router } from "express";
 import userDao from "../dao/mongoDao/user.dao.js";
+import { createHash, isValidPassword } from "../utils/hashPassword.js";
+import passport from "passport";
 
 const router = Router();
 
-router.post("/register", async (req, res) => {
+router.post("/register", passport.authenticate("register"), async (req, res) => {
   try {
-    const userData = req.body;
-    const newUser = await userDao.create(userData);
-
-    if (!newUser)
-      return res
-        .status(400)
-        .json({ status: "Error", msg: "No se pudo crear el usuario" });
-
-    res.status(201).json({ status: "Success", payload: newUser });
+    res.status(201).json({ status: "Success", msg: "User created" });
   } catch (error) {
     console.log(error);
     res.status(500).json({ status: "Error", msg: "Internal Server Error" });
   }
 });
 
-router.post("/login", async (req, res) => {
+// router.post("/login", passport.authenticate("login"), async (req, res) => {
+//   try {
+
+//       return res.status(200).json({ status: "Success", payload: req.user });
+  
+
+//     res.status(200).json({ status: "Success", payload: req.session.user }); // verificamos el usuario que esta
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).json({ status: "Error", msg: "Internal Server Error" });
+//   }
+// });
+
+router.get("/login", passport.authenticate("google", {
+  scope: ["https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/userinfo.profile" ],
+  session: false
+}), async (req, res) => {
   try {
-    const { email, password } = req.body;
 
-    //verificar que el usuario sea administrador
-    if (email === "adminCoder@coder.com" && password === "adminCod3r123") {
-      req.session.user = {
-        email,
-        role: "admin",
-      };
-      return res
-        .status(200)
-        .json({ status: "Success", payload: req.session.user });
-    }
-
-    //si no es admin
-    const user = await userDao.getByEmail(email);
-    if (!user || user.password !== password) {
-      return res
-        .status(401)
-        .json({ status: "Error", msg: "Invalid email or password" });
-    }
-
-    req.session.user = {
-      email,
-      role: "user",
-    };
+      return res.status(200).json({ status: "Success", payload: req.user });
+  
 
     res.status(200).json({ status: "Success", payload: req.session.user }); // verificamos el usuario que esta
   } catch (error) {

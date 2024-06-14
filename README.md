@@ -1,12 +1,8 @@
- <h1 align="center"> - Implementación de LOGIN -  </h1>
+ <h1 align="center"> - Refactor a nuestro login -  </h1>
 
 ### Para esta entrega se incluyó:
-- se implementó en el proyecto session-express & MongoStore
-- se crearon los archivos session.routes.js |  user.models.js | user.data.js para manejar:
-    - register
-    - login
-    - login admin
-    - logout
-- se agregó la condición de que el usuario esté logueado en el sistema para poder visualizar agregar productos al carrito
+- se implementó en el proyecto hasheo de contraseña utilizando bcrypt
+- se implementó en el proyecto passport, tanto para register como para login, con la creación del archivo passport.config.js dentro de la carpeta config realizando las respectivas modificaciones en el archivo app.js & session.routes.js para un correcto funcionamiento.
+- se implementó en el proyecto método de autenticación de google a la vista de login.
 
 :construction: Proyecto en construcción :construction:
