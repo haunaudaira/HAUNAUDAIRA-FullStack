@@ -2,6 +2,7 @@ import { Router } from "express";
 const router = Router();
 import productDao from "../dao/mongoDao/product.dao.js";
 import { isLogged } from "../middlewares/isLogin.middleware.js";
+import { authorization, passportCall } from "../middlewares/passport.middleware.js";
 
 // res: respuesta que enviamos al cliente || request: información que nuestro servidor recibe del cliente
 //con esta función traemos los productos. url: localhost:8080/api/products
@@ -55,7 +56,7 @@ router.get("/:pid", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", passportCall("jwt"), authorization("admin"), async (req, res) => {
   try {
     const product = req.body;
     const newProduct = await productDao.create(product);

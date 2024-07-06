@@ -7,7 +7,7 @@ import { isLogged } from "../middlewares/isLogin.middleware.js";
 const router = Router ();
 
 //endpoints a trabajar
-router.use("/products", isLogged, productsRouters);
+router.use("/products", productsRouters);
 router.use("/carts", cartsRouters);
 router.use("/message", messageRouters);
 router.use("/session", sessionRouters);

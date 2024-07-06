@@ -1,12 +1,13 @@
 import { Router } from "express";
 import cartDao from "../dao/mongoDao/cart.dao.js";
+import { authorization, passportCall } from "../middlewares/passport.middleware.js";
 
 const router = Router();
 
 // acá, a parte de crear las rutas, hacemos el manejo de errores
 
 //localhost:8080/api/carts/
-router.post("/", async (req, res) => {
+router.post("/", authorization("user") ,async (req, res) => {
     try {
         const cart = await cartDao.create(); //creamos el carrito
 
@@ -20,7 +21,7 @@ router.post("/", async (req, res) => {
 })
 
 //postman route: localhost:8080/api/carts/:cid/products/:pid
-router.post("/:cid/products/:pid", async (req, res) => {
+router.post("/:cid/products/:pid", passportCall("jwt"), authorization("user") ,async (req, res) => {
     try {
         const { cid, pid } = req.params
         const cart = await cartDao.addProductsToCart(cid, pid) //cart id, product id
@@ -37,7 +38,7 @@ router.post("/:cid/products/:pid", async (req, res) => {
 })
 
 //postman route: localhost:8080/api/carts/:cid/products/:pid
-router.put("/:cid/products/:pid", async (req, res) => {
+router.put("/:cid/products/:pid", passportCall("jwt"), authorization("admin"), async (req, res) => {
     try {
         const { cid, pid } = req.params
         const { quantity } = req.body;
@@ -55,7 +56,7 @@ router.put("/:cid/products/:pid", async (req, res) => {
 })
 
 
-router.delete("/:cid/products/:pid", async (req, res) => {
+router.delete("/:cid/products/:pid", passportCall("jwt"), authorization("admin"),async (req, res) => {
     try {
         const { cid, pid } = req.params
         const cart = await cartDao.deleteProductFromCart(cid, pid) //cart id, product id
@@ -72,7 +73,7 @@ router.delete("/:cid/products/:pid", async (req, res) => {
 })
 
 // pos man route: localhost:8080/api/carts/:cid
-router.get("/:cid", async (req, res) => {
+router.get("/:cid", passportCall("jwt"), authorization("admin"), async (req, res) => {
     try {
         const { cid } = req.params;
         const cart = await cartDao.getById(cid);
@@ -89,7 +90,7 @@ router.get("/:cid", async (req, res) => {
 })
 
 
-router.put ("/:cid", async (req, res) =>{
+router.put ("/:cid", passportCall("jwt"), authorization("admin"), async (req, res) =>{
     try {
         const { cid } = req.params;
         const body = req.body;
@@ -106,7 +107,7 @@ router.put ("/:cid", async (req, res) =>{
 })
 
 
-router.delete("/:cid", async (req, res) =>{
+router.delete("/:cid", passportCall("jwt"), authorization("admin"), async (req, res) =>{
     try {
         const { cid } = req.params;
         const cart = await cartDao.deleteAllProductsFromCart(cid);
