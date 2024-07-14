@@ -7,6 +7,7 @@ import google from "passport-google-oauth20";
 import jwt from "passport-jwt";
 import { cookieExtractor } from "../utils/cookieExtractor.js";
 import userServices from "../services/user.services.js";
+import envs from "../config/env.config.js"
 
 const localStrategy = local.Strategy;
 
@@ -76,9 +77,9 @@ passport.use(
   "google",
   new googleStrategy(
     {
-      clientID: "",
-      clientSecret: "",
-      callbackURL: "",
+      clientID: envs.GOOGLE_CLIENT_ID,
+      clientSecret: envs.GOOGLE_CLIENT_SECRET,
+      callbackURL: "http://localhost:8080/api/session/login",
     },
     async (accessToken, refreshToken, profile, cb) => {
       try {
@@ -105,7 +106,7 @@ passport.use(
   new JWTStrategy(
     {
       jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
-      secretOrKey: "codigoSecreto",
+      secretOrKey: envs.CODE_SECRET,
     },
     async (jwt_payload, done) => {
       try {

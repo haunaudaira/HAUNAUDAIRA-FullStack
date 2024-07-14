@@ -6,6 +6,7 @@ import { connectMongoDB } from "./config/mongoDB.config.js";
 import passport from "passport";
 import initializePassport from "./config/passport.config..js";
 import cookieParser from "cookie-parser";
+import envs from "./config/env.config.js"
 
 //conexión a BD
 connectMongoDB();
@@ -23,7 +24,7 @@ app.use(
         "mongodb+srv://admin:coderdbtest@e-commerce.xeozaf3.mongodb.net/ecommerce",
       ttl: 15,
     }),
-    secret: "CodigoSecreto",
+    secret: envs.CODE_SECRET,
     resave: true,
     saveUninitialized: false,
   })
@@ -35,6 +36,6 @@ initializePassport();
 
 app.use("/api", router); //agregado para la primer pre-entrega
 
-app.listen(8080, () => {
-  console.log("Escuchando al servidor en el puerto 8080");
+app.listen(envs.PORT, () => {
+  console.log(`Escuchando al servidor en el puerto ${envs.PORT} `);
 });
